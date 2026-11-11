@@ -56,6 +56,7 @@ The API is available at <http://localhost:8000/docs>.
 4. Open the service's `/docs` URL to try `POST /ask`.
 
 The Blueprint uses Render's free plan. Free web services can sleep when idle and may take a little time to respond after waking.
+This learning demo leaves `/ask` public and unauthenticated. Anyone with the URL can use it, which can incur OpenAI API charges; don't use this setup for sensitive or production workloads.
 
 ## Run tests
 
