@@ -5,7 +5,7 @@ A small learning project: ask questions about one company's information and get 
 ## How it works
 
 1. `data/company_info.md` is split into small text chunks.
-2. OpenAI embeddings put the chunks into an in-memory vector store.
+2. Gemini embeddings put the chunks into an in-memory vector store.
 3. The retriever finds relevant chunks for a question.
 4. A two-step LangGraph retrieves context and asks the chat model to answer from it.
 5. `POST /ask` returns the answer and source filenames.
@@ -14,7 +14,7 @@ The vector store is rebuilt in memory when the app starts answering questions. T
 
 ## Run locally
 
-Requires Python 3.11+ and an OpenAI API key.
+Requires Python 3.11+ and a Gemini API key from [Google AI Studio](https://aistudio.google.com/apikey).
 
 ```powershell
 py -3.11 -m venv .venv
@@ -23,7 +23,7 @@ python -m pip install -e ".[dev]"
 Copy-Item .env.example .env
 ```
 
-Add your key to `.env`, then run:
+Add your `GEMINI_API_KEY` to `.env`, then run:
 
 ```powershell
 python -m uvicorn company_assistant.api:app --reload --app-dir src
@@ -35,14 +35,14 @@ Open <http://localhost:8000/docs> to try `POST /ask`. Example body:
 {"question": "How long does delivery take?"}
 ```
 
-`GET /health` checks that the API is running. Without an API key, `/ask` responds with a clear setup error.
+`GET /health` checks that the API is running. Without a Gemini API key, `/ask` responds with a clear setup error.
 
 ## Run with Docker
 
-Set `OPENAI_API_KEY` in your shell, then run:
+Set `GEMINI_API_KEY` in your shell, then run:
 
 ```powershell
-$env:OPENAI_API_KEY = "your-key"
+$env:GEMINI_API_KEY = "your-key"
 docker compose up --build
 ```
 
@@ -52,11 +52,11 @@ The API is available at <http://localhost:8000/docs>.
 
 1. Push this project, including `render.yaml`, to a GitHub repository.
 2. In Render, choose **New → Blueprint**, connect that repository, and deploy the `company-info-assistant` service.
-3. When prompted, set `OPENAI_API_KEY` as a secret in Render. Do not commit the key to GitHub.
+3. Set `GEMINI_API_KEY` as a secret in Render. Do not commit the key to GitHub.
 4. Open the service's `/docs` URL to try `POST /ask`.
 
 The Blueprint uses Render's free plan. Free web services can sleep when idle and may take a little time to respond after waking.
-This learning demo leaves `/ask` public and unauthenticated. Anyone with the URL can use it, which can incur OpenAI API charges; don't use this setup for sensitive or production workloads.
+This learning demo leaves `/ask` public and unauthenticated. Anyone with the URL can use it, which can incur Gemini API charges; don't use this setup for sensitive or production workloads.
 
 ## Run tests
 

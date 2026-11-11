@@ -1,10 +1,13 @@
 from functools import lru_cache
 
 from fastapi import FastAPI, HTTPException
-from langchain_openai import ChatOpenAI, OpenAIEmbeddings
+from langchain_google_genai import (
+    ChatGoogleGenerativeAI,
+    GoogleGenerativeAIEmbeddings,
+)
 from pydantic import BaseModel, Field
 
-from company_assistant.config import get_api_key, get_model_name
+from company_assistant.config import get_gemini_api_key, get_gemini_model_name
 from company_assistant.graph import build_graph
 from company_assistant.knowledge import build_retriever
 
@@ -20,12 +23,15 @@ class AnswerResponse(BaseModel):
 
 @lru_cache(maxsize=1)
 def get_answer_graph():
-    api_key = get_api_key()
-    embeddings = OpenAIEmbeddings(api_key=api_key)
+    api_key = get_gemini_api_key()
+    embeddings = GoogleGenerativeAIEmbeddings(
+        model="gemini-embedding-001",
+        google_api_key=api_key,
+    )
     retriever = build_retriever(embeddings)
-    model = ChatOpenAI(
+    model = ChatGoogleGenerativeAI(
         api_key=api_key,
-        model=get_model_name(),
+        model=get_gemini_model_name(),
         temperature=0,
     )
     return build_graph(retriever, model)
